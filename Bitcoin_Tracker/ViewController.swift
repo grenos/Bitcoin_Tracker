@@ -15,9 +15,11 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
  
     let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
     let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    let currencySymbolArray = ["$", "R$", "$", "¥", "€", "£", "$", "Rp", "₪", "₹", "¥", "$", "kr", "$", "zł", "lei", "₽", "kr", "$", "$", "R"]
     var finalURL = ""
-    
+    var currencySelected = ""
 
+    
     @IBOutlet weak var currentBitPrice: UILabel!
     @IBOutlet weak var currencyPicker: UIPickerView!
     
@@ -51,6 +53,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     // tells the picker what to do when the user selects a particular row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         finalURL = baseURL + currencyArray[row]
+        currencySelected = currencyArray[row]
         getCurencyValues(url: finalURL)
         
     }
@@ -82,7 +85,13 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     // MARK: - SWIFTY JSON - PARESE JSON
     /**********************************************************************************************/
     func updateCoinCurrency (json: JSON) {
-            self.currentBitPrice.text = json["ask"].stringValue
+        
+        if let currencyResult = json["ask"].double {
+            currentBitPrice.text = currencySelected + String(currencyResult)
+        } else {
+            currentBitPrice.text = "Price Unavailable"
+        }
+        
     }
     
 
